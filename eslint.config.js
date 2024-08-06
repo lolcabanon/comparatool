@@ -18,6 +18,15 @@ export default [
     }
   },
   {
-    ignores: ['build/', '.svelte-kit/', 'dist/']
+    ignores: ['build/', '.svelte-kit/', 'dist/'],
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ]
+    }
   }
 ];

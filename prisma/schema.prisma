@@ -16,8 +16,11 @@ datasource db {
 model Tool {
   id String @id @default(cuid())
 
+  type    ToolType @relation(fields: [typeStr], references: [type])
+  typeStr String
+
   name     String
-  repo     String
+  repo     String  @unique
   homepage String?
 
   license String
@@ -28,4 +31,11 @@ model Tool {
 
   stargazers_count  Int
   open_issues_count Int
+}
+
+model ToolType {
+  type  String @id
+  label String
+
+  Tool Tool[]
 }

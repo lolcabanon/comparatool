@@ -1,6 +1,18 @@
 import { z } from 'zod';
 
-export const repoURLSchema = z.string().url();
+import normalizeUrl from 'normalize-url';
+
+export const repoURLSchema = z
+  .string()
+  .url()
+  .transform((str) =>
+    normalizeUrl(str, {
+      forceHttps: true,
+      removeTrailingSlash: true,
+      stripHash: true,
+      removeQueryParameters: true
+    })
+  );
 
 export const repoJSONSchema = z
   .object({
@@ -8,7 +20,7 @@ export const repoJSONSchema = z
     full_name: z.string(),
     html_url: z.string().url(),
     description: z.string(),
-    homepage: z.string().url().nullable(),
+    homepage: z.string().url().or(z.string().max(0)).nullish(),
 
     license: z.object({
       key: z.string(),

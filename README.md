@@ -1,38 +1,68 @@
-# create-svelte
+## Comparatool
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A work tool + Toy project
 
-## Creating a project
+I found myself creating _many_ lists of npm packages I _wanted to try/needed for projects_, so I created **Comparatool** to simplify the harvest process.
 
-If you're seeing this, you've probably already done this step. Congrats!
+It is also an occasion for me to test the Svelte 5 preview and fiddle with the JavaScript ecosystem. (:
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Tech Stack
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+-   Svelte 5 (preview)
+-   SvelteKit 2
+-   Melt-UI for headless components
+-   SASS (`.scss`) for styles
+-   Prisma ORM
+-   PNPM
+-   Prettier
+-   ESLint
+
+## Limitations
+
+-   Currently only support **GitHub** as a data source
+-   Mostly aimed at **`npm` packages**
+-   **No auth**, this is (for now) intended for local use only
+
+## Contributing
+
+Open to comments and PR.
+
+1. Clone the project (`git clone `)
+1. Create new branch (`git checkout -b new_branch`)
+1. `while (!done) { commit('new stuff!') && push(new_branch) }`
+1. Create pull request
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies :
 
 ```bash
-npm run dev
+pnpm i
+```
+
+Initialize prisma client :
+
+```bash
+pnpm prisma:push
+```
+
+Start a development server :
+
+```bash
+pnpm dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm dev -- --open
 ```
 
 ## Building
 
-To create a production version of your app:
+To create a production version :
 
 ```bash
-npm run build
+pnpm build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with `pnpm preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

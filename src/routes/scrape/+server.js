@@ -1,6 +1,9 @@
+import { json } from '@sveltejs/kit';
+
 import { repoJSONSchema, repoURLSchema } from '$lib/schemas/tool.js';
 import { prisma } from '$lib/server/prisma.js';
-import { json } from '@sveltejs/kit';
+
+import { ghAuth } from '$lib/server/ghFetch.js';
 
 export const GET = async ({ fetch }) => {
   const tools = await prisma.tool.findMany();
@@ -13,7 +16,8 @@ export const GET = async ({ fetch }) => {
     const repoRoute = new URL(repoURL);
 
     const repoInfos = await fetch(
-      `https://api.github.com/repos${repoRoute.pathname}`
+      `https://api.github.com/repos${repoRoute.pathname}`,
+      ghAuth()
     );
 
     const {

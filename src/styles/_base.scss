@@ -1,0 +1,38 @@
+:root {
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+section {
+  display: grid;
+  place-items: center;
+
+  padding-inline: 4em;
+  margin-block: 2em;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+form {
+  border: 2px solid #eee;
+  padding: 2em;
+  border-radius: 0.5em;
+
+  h2 {
+    margin-top: 0;
+  }
+
+  p.invalid {
+    font-size: 0.8em;
+    color: var(--clr-red);
+  }
+}

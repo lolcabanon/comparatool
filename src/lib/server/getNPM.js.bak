@@ -1,0 +1,73 @@
+import { env } from '$env/dynamic/private';
+
+/**
+ *
+ * @param {Promise<import('@prisma/client').Tool[]>} tools
+ */
+export const getNPM = async (tools) => {
+  return Promise.all(
+    (await tools).map(async (tool) => {
+      const ghURL = tool.repo;
+      const urlObject = new URL(ghURL);
+
+      try {
+        const { default_branch } = await (
+          await fetch(`https://api.github.com/repos${urlObject.pathname}`, ghAuth())
+        ).json();
+
+        console.log('default_branch', tool.name, default_branch);
+
+        /**
+         * @type {{ tree: { path: string, url: string }[]}}
+         */
+        const repoTree = await (
+          await fetch(
+            `https://api.github.com/repos${urlObject.pathname}/git/trees/${default_branch}?recursive=true`,ghAuth()
+          )
+        ).json();
+
+        const packageJSONFile = repoTree.tree.find((file) =>
+          file.path.includes('package.json')
+        ); // repocontent.find((file) => file.name === 'package.json');
+
+        console.log(packageJSONFile);
+
+        /**
+         * @type {{ content: string }}
+         */
+        const blob = packageJSONFile
+          ? await (
+              await fetch(packageJSONFile.url, ghAuth())
+            ).json()
+          : {};
+
+        console.log(blob);
+
+        /**
+         * @type {{ name: string }}
+         */
+        const json = JSON.parse(atob(blob.content));
+
+        return json.name ?? 'Nom introuvable';
+      } catch (e) {
+        console.error(e);
+
+        console.log('failed getting package.json for', tool.name);
+      }
+
+      //   /**
+      //    * @type {string[]}
+      //    */
+      //   let npmLine = [];
+
+      //   readme.split('\n').forEach((line) => {
+      //     const matches = line.match(/npm i(?:nstall)?(?: --.*)? (\b.*\b)/);
+
+      //     matches && console.log(matches);
+      //     if (matches) npmLine.push(matches[1]);
+      //   });
+
+      //   return npmLine;
+    })
+  );
+};

@@ -4,9 +4,12 @@ import { repoJSONSchema, repoURLSchema } from '$lib/schemas/tool.js';
 import { prisma } from '$lib/server/prisma.js';
 
 import { ghAuth } from '$lib/server/ghFetch.js';
+import { getNPMpackages } from '$lib/server/getNPM.js';
 
 export const GET = async ({ fetch }) => {
   const tools = await prisma.tool.findMany();
+
+  const pkgs = await getNPMpackages(tools);
 
   tools.forEach(async (tool) => {
     const repoURL = repoURLSchema.parse(tool.repo);
@@ -35,6 +38,8 @@ export const GET = async ({ fetch }) => {
       },
       data: {
         license: license.spdx_id,
+
+        pkgName: pkgs.find((p) => p[0] === tool.name)?.[1],
 
         created_at,
         updated_at,

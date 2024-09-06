@@ -22,6 +22,9 @@ model Tool {
   name     String
   repo     String  @unique
   homepage String?
+  pkgName  String?
+
+  notes String?
 
   license String
 
@@ -31,6 +34,8 @@ model Tool {
 
   stargazers_count  Int
   open_issues_count Int
+
+  hide Boolean @default(false)
 }
 
 model ToolType {

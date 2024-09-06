@@ -6,12 +6,12 @@ import { ZodError } from 'zod';
 import { prisma } from '$lib/server/prisma';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-import { getNPM } from '$lib/server/getNPM';
 import { ghAuth } from '$lib/server/ghFetch';
+import { getNPMpackage } from '$lib/server/getNPM';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
-  const tools = prisma.tool.findMany({
+  const tools = await prisma.tool.findMany({
     where: {
       typeStr: params.type
     },
@@ -20,7 +20,9 @@ export async function load({ params }) {
     }
   });
 
-  return { tools, pkgs: await getNPM(tools) };
+  // const pkgs = [] ?? (await getNPMpackages(tools));
+
+  return { tools };
 }
 
 /** @type {import('./$types').Actions} */
@@ -42,15 +44,21 @@ export const actions = {
 
       const repoJSON = repoJSONSchema.parse(await repoInfos.json());
 
-      const id = await prisma.tool.create({
+      const [, pkgName] = await getNPMpackage({
+        name: repoJSON.name,
+        repo: repoURL
+      });
+
+      const tool = await prisma.tool.create({
         data: {
           typeStr: params.type,
 
           name: repoJSON.name,
           repo: repoURL,
           homepage: repoJSON.homepage,
+          pkgName,
 
-          license: repoJSON.license.spdx_id,
+          license: repoJSON.license?.spdx_id ?? 'Inconnue',
 
           created_at: repoJSON.created_at,
           updated_at: repoJSON.updated_at,
@@ -58,10 +66,13 @@ export const actions = {
 
           stargazers_count: repoJSON.stargazers_count,
           open_issues_count: repoJSON.open_issues_count
+        },
+        include: {
+          type: true
         }
       });
 
-      return { id };
+      return { tool };
     } catch (err) {
       console.error(err);
       // error(400);

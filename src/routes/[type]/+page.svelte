@@ -1,23 +1,22 @@
 <script>
 	import { enhance } from '$app/forms';
 
-	import { Star, Bug, Cake, Clock, Copy, ExternalLink } from 'lucide-svelte';
+	import { ExternalLink } from 'lucide-svelte';
 
-	import { format, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
-	// import { frCA } from 'date-fns/locale';
-	import { frCA } from '$lib/_frCA.js';
-	import { DATE_FORMAT } from '$lib/DATE_FORMAT.js';
 	import ToolsGrid from './ToolsGrid.svelte';
+	import { untrack } from 'svelte';
 
 	const { data, form } = $props();
 
 	const newTool = $derived(form?.tool);
 
 	let tools = $state(data.tools);
-	const visibleTools = $derived(
-		newTool ? [...tools.filter((t) => !t.hide), newTool] : tools.filter((t) => !t.hide)
-	);
+	const visibleTools = $derived(tools.filter((t) => !t.hide));
 	const hiddenTools = $derived(tools.filter((t) => t.hide));
+
+	$effect(() => {
+		newTool && untrack(() => tools.push(newTool));
+	});
 
 	const pkgsString = $derived(
 		visibleTools

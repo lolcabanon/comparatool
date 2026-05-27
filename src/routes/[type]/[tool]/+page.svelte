@@ -122,6 +122,7 @@
 					saveState = 'pending';
 					saveNotes(e);
 				}}
+				rows="8"
 			></textarea>
 		</label>
 	</section>

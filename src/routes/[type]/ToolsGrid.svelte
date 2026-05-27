@@ -192,6 +192,10 @@
 		justify-content: flex-end;
 
 		// margin-top: 1em;
+
+		span {
+			text-wrap: nowrap;
+		}
 	}
 
 	.age,
